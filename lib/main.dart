@@ -46,6 +46,13 @@ class PayunginApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       // Layar Login aktif sebagai halaman awal (PBI-006)
       home: const LoginScreen(),
+      // Format 24 jam waktu Indonesia (tanpa AM/PM) untuk seluruh aplikasi
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

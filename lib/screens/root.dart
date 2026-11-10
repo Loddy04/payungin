@@ -5,6 +5,7 @@ import '../services/settings_service.dart';
 import '../theme/app_theme.dart';
 import 'favorites_screen.dart';
 import 'profile_screen.dart';
+import 'reminders_screen.dart';
 
 // Kerangka navigasi utama aplikasi dengan 5 tab (F8)
 class RootScreen extends StatefulWidget {
@@ -73,11 +74,7 @@ class _RootScreenState extends State<RootScreen> {
         subtitle: 'Selamat datang di Payungin. Pantau Skor Payung hari ini (Sprint 2 - Loddy).',
       ),
       const FavoritesScreen(),
-      _buildPlaceholder(
-        title: 'Pengingat Cuaca',
-        icon: Icons.notifications_none_rounded,
-        subtitle: 'Tab pengingat cuaca berbasis key (Sprint 3).',
-      ),
+      const RemindersScreen(),
       _buildPlaceholder(
         title: 'Perlengkapan Hujan',
         icon: Icons.backpack_outlined,
