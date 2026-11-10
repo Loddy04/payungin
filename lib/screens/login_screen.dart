@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../theme/app_theme.dart';
 import '../widgets/input_field.dart';
+import 'register_screen.dart';
 import 'root.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -83,16 +84,33 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // Cocokkan kredensial dengan akun demo
-    if (User.demo.matches(username, password)) {
+    // Periksa kredensial dari akun demo atau akun yang terdaftar di SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final isDemo = User.demo.matches(username, password);
+
+    final regUser = prefs.getString('registered_username');
+    final regPass = prefs.getString('registered_password');
+    final regFullName = prefs.getString('registered_fullName');
+    final isRegistered = regUser != null &&
+        regPass != null &&
+        regUser == username.toLowerCase() &&
+        regPass == password;
+
+    if (isDemo || isRegistered) {
       setState(() {
         _isLoginFailed = false;
       });
 
-      // Simpan status sesi dan nama pengguna ke SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
+      // Simpan status sesi aktif
       await prefs.setBool('loginData', true);
       await prefs.setString('username', username);
+
+      // Simpan atau pertahankan nama lengkap
+      if (isRegistered && regFullName != null && regFullName.isNotEmpty) {
+        await prefs.setString('fullName', regFullName);
+      } else if (prefs.getString('fullName') == null) {
+        await prefs.setString('fullName', 'Administrator Payungin');
+      }
 
       if (!mounted) return;
 
@@ -102,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (context) => const RootScreen()),
       );
     } else {
+      if (!mounted) return;
       setState(() {
         _isLoginFailed = true;
       });
@@ -217,6 +236,41 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: _login,
                       child: const Text('Masuk'),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Tautan menuju layar Registrasi Akun Baru
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Belum punya akun? ',
+                          style: TextStyle(color: c.textMuted, fontSize: 13),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final registeredUser = await Navigator.push<String>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterScreen(),
+                              ),
+                            );
+                            // Otomatis isi username jika baru saja mendaftar
+                            if (registeredUser != null && registeredUser.isNotEmpty) {
+                              _usernameController.text = registeredUser;
+                              _passwordController.clear();
+                            }
+                          },
+                          child: Text(
+                            'Daftar di sini',
+                            style: TextStyle(
+                              color: c.accent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

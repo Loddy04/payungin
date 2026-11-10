@@ -1,7 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+import '../services/settings_service.dart';
 import '../theme/app_theme.dart';
+import 'favorites_screen.dart';
+import 'profile_screen.dart';
 
 // Kerangka navigasi utama aplikasi dengan 5 tab (F8)
 class RootScreen extends StatefulWidget {
@@ -65,15 +68,11 @@ class _RootScreenState extends State<RootScreen> {
     // Daftar 5 halaman tab aplikasi
     final List<Widget> pages = [
       _buildPlaceholder(
-        title: 'Beranda Cuaca',
+        title: 'Halo, ${SettingsService.fullName}! 👋',
         icon: Icons.cloud_outlined,
-        subtitle: 'Tab Beranda & Skor Payung (Sprint 2).',
+        subtitle: 'Selamat datang di Payungin. Pantau Skor Payung hari ini (Sprint 2 - Loddy).',
       ),
-      _buildPlaceholder(
-        title: 'Kota Favorit',
-        icon: Icons.location_city_outlined,
-        subtitle: 'Tab daftar kota favorit (Sprint 2).',
-      ),
+      const FavoritesScreen(),
       _buildPlaceholder(
         title: 'Pengingat Cuaca',
         icon: Icons.notifications_none_rounded,
@@ -84,10 +83,10 @@ class _RootScreenState extends State<RootScreen> {
         icon: Icons.backpack_outlined,
         subtitle: 'Tab keranjang perlengkapan (Sprint 4).',
       ),
-      _buildPlaceholder(
-        title: 'Profil & Pengaturan',
-        icon: Icons.person_outline_rounded,
-        subtitle: 'Tab pengaturan satuan & logout (Sprint 2).',
+      ProfileScreen(
+        onNameChanged: () {
+          setState(() {}); // Segarkan sapaan di Beranda jika nama diedit
+        },
       ),
     ];
 

@@ -25,6 +25,17 @@ class SettingsService {
   // Getter longitude kota utama, default 110.36
   static double get mainLon => _prefs?.getDouble('mainLon') ?? 110.36;
 
+  // Getter nama lengkap pengguna, default 'Administrator Payungin'
+  static String get fullName => _prefs?.getString('fullName') ?? 'Administrator Payungin';
+
+  // Getter username pengguna aktif, default 'adminpayungin'
+  static String get username => _prefs?.getString('username') ?? 'adminpayungin';
+
+  // Setter nama lengkap pengguna (bisa diedit di profil)
+  static Future<void> setFullName(String name) async {
+    await _prefs?.setString('fullName', name);
+  }
+
   // Setter satuan suhu
   static Future<void> setUnit(String newUnit) async {
     await _prefs?.setString('tempUnit', newUnit);
